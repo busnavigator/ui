@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -58,15 +57,18 @@ func main() {
 	// App entry point
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Route Display")
-	os.Setenv("FYNE_SCALE", "7")
+	os.Setenv("FYNE_SCALE", "5")
 
 	// Colors
 	colorRed := color.RGBA{R: 250, G: 0, B: 0, A: 250}
 
-	// Clock text
-	currentTimeLabel := canvas.NewText("Loading time...", colorRed)
-	currentTimeLabel.Alignment = fyne.TextAlignLeading
-	topContainer := container.New(layout.NewVBoxLayout(), currentTimeLabel)
+	// Texts
+	currentTimeText := canvas.NewText("Loading time...", colorRed)
+	currentRouteText := canvas.NewText("Loading route...", colorRed)
+
+	// Containers
+	topHContainer := container.New(layout.NewHBoxLayout(), currentTimeText, layout.NewSpacer(), currentRouteText)
+	topContainer := container.New(layout.NewVBoxLayout(), topHContainer)
 
 	timeChannel := getTimeEverySecond()
 
@@ -74,8 +76,8 @@ func main() {
 		for {
 			// Set time
 			currentTime := <-timeChannel
-			currentTimeLabel.Text = currentTime
-			currentTimeLabel.Refresh()
+			currentTimeText.Text = currentTime
+			currentTimeText.Refresh()
 		}
 	}()
 
