@@ -16,8 +16,9 @@ import (
 )
 
 type Route struct {
-	Name  string   `json:"name"`
-	Stops []string `json:"stops"`
+	Name     string   `json:"name"`
+	NextStop int      `json:"nextStop"`
+	Stops    []string `json:"stops"`
 }
 
 func fetchRoutes(apiURL string) ([]Route, error) {
