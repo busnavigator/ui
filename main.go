@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -57,6 +58,7 @@ func main() {
 	// App entry point
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Route Display")
+	os.Setenv("FYNE_SCALE", "7")
 
 	// Colors
 	colorRed := color.RGBA{R: 250, G: 0, B: 0, A: 250}
