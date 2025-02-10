@@ -72,7 +72,7 @@ func main() {
 	topContainer := container.New(layout.NewVBoxLayout(), topHContainer)
 
 	timeChannel := getTimeEverySecond()
-	apiURL := "http://192.168.64.19:3000/getAllRoutes"
+	apiURL := "http://192.168.64.20:3000/getAllRoutes"
 
 	go func() {
 		for {
