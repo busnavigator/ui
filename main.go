@@ -63,13 +63,19 @@ func main() {
 	// Colors
 	colorRed := color.RGBA{R: 250, G: 0, B: 0, A: 250}
 
-	// Texts
+	// Top container
 	currentTimeText := canvas.NewText("Loading time...", colorRed)
 	currentRouteText := canvas.NewText("Loading route...", colorRed)
 
-	// Containers
 	topHContainer := container.New(layout.NewHBoxLayout(), currentTimeText, layout.NewSpacer(), currentRouteText)
 	topContainer := container.New(layout.NewVBoxLayout(), topHContainer)
+
+	// Middle container
+	nextStopText := canvas.NewText("Loading next stop...", colorRed)
+	middleContainer := container.New(layout.NewCenterLayout(), layout.NewSpacer(), nextStopText)
+
+	// Main container
+	mainContainer := container.New(layout.NewStackLayout(), topContainer, middleContainer)
 
 	timeChannel := getTimeEverySecond()
 	apiURL := "http://192.168.64.20:3000/getAllRoutes"
@@ -95,6 +101,6 @@ func main() {
 	}()
 
 	myWindow.SetFullScreen(true)
-	myWindow.SetContent(topContainer)
+	myWindow.SetContent(mainContainer)
 	myWindow.ShowAndRun()
 }
