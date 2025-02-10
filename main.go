@@ -94,9 +94,14 @@ func main() {
 				// Log error
 				log.Println(err)
 			} else {
-				// Update route text
-				currentRouteText.Text = routes[len(routes)-1].Name
+				route := routes[len(routes)-1]
+
+				// Update texts
+				currentRouteText.Text = "Target: " + route.Name
 				currentRouteText.Refresh()
+
+				nextStopText.Text = "Next stop: " + route.Stops[route.NextStop]
+				nextStopText.Refresh()
 			}
 		}
 	}()
