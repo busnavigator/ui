@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"image/color"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -71,6 +72,7 @@ func main() {
 	topContainer := container.New(layout.NewVBoxLayout(), topHContainer)
 
 	timeChannel := getTimeEverySecond()
+	apiURL := "http://192.168.64.19:3000/getAllRoutes"
 
 	go func() {
 		for {
@@ -78,6 +80,17 @@ func main() {
 			currentTime := <-timeChannel
 			currentTimeText.Text = currentTime
 			currentTimeText.Refresh()
+
+			// Handle fetching
+			routes, err := fetchRoutes(apiURL)
+			if err != nil {
+				// Log error
+				log.Println(err)
+			} else {
+				// Update route text
+				currentRouteText.Text = routes[len(routes)-1].Name
+				currentRouteText.Refresh()
+			}
 		}
 	}()
 
