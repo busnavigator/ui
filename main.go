@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -53,11 +54,17 @@ func getTimeEverySecond() <-chan string {
 }
 
 func main() {
+	// App entry point
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Route Display")
 
-	currentTimeLabel := canvas.NewText("Loading time...", color.White)
-	topContainer := container.New(layout.NewHBoxLayout(), currentTimeLabel)
+	// Colors
+	colorRed := color.RGBA{R: 250, G: 0, B: 0, A: 250}
+
+	// Clock text
+	currentTimeLabel := canvas.NewText("Loading time...", colorRed)
+	currentTimeLabel.Alignment = fyne.TextAlignLeading
+	topContainer := container.New(layout.NewVBoxLayout(), currentTimeLabel)
 
 	timeChannel := getTimeEverySecond()
 
