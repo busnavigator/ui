@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"image/color"
 	"io/ioutil"
 	"net/http"
 	"time"
 
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
+	"fyne.io/fyne/v2/layout"
 )
 
 type Route struct {
@@ -37,40 +38,39 @@ func fetchRoutes(apiURL string) ([]Route, error) {
 	return routes, nil
 }
 
+func getTimeEverySecond() <-chan string {
+	// Create a channel to send the current time
+	timeChannel := make(chan string)
+
+	go func() {
+		for {
+			currentTime := time.Now().Format("15:04:05")
+			timeChannel <- currentTime
+			time.Sleep(1 * time.Second)
+		}
+	}()
+	return timeChannel
+}
+
 func main() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Route Display")
 
-	currentRoute := widget.NewLabel("Route: Loading...")
-	nextStop := widget.NewLabel("Next: Loading...")
-	container := container.NewVBox(currentRoute, nextStop)
+	currentTimeLabel := canvas.NewText("Loading time...", color.White)
+	topContainer := container.New(layout.NewHBoxLayout(), currentTimeLabel)
 
-	apiURL := "http://192.168.64.19:3000/getAllRoutes" // Replace with actual API URL
+	timeChannel := getTimeEverySecond()
 
 	go func() {
 		for {
-			routes, err := fetchRoutes(apiURL)
-			if err != nil {
-				fmt.Println("Error fetching routes:", err)
-			} else {
-				// If routes are fetched successfully, display the first route's info
-				if len(routes) > 0 {
-					currentRoute.SetText("Route: " + routes[0].Name)
-					if len(routes[0].Stops) > 0 {
-						nextStop.SetText("Next stop: " + routes[0].Stops[0])
-					} else {
-						nextStop.SetText("Next stop: No stops available")
-					}
-				} else {
-					currentRoute.SetText("Route: No routes available")
-					nextStop.SetText("Next stop: N/A")
-				}
-			}
-			time.Sleep(5 * time.Second) // Refresh every 5 seconds
+			// Set time
+			currentTime := <-timeChannel
+			currentTimeLabel.Text = currentTime
+			currentTimeLabel.Refresh()
 		}
 	}()
 
 	myWindow.SetFullScreen(true)
-	myWindow.SetContent(container)
+	myWindow.SetContent(topContainer)
 	myWindow.ShowAndRun()
 }
