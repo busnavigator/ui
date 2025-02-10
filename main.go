@@ -41,9 +41,9 @@ func main() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Route Display")
 
-	currentLabel := widget.NewLabel("Current: Loading...")
-	nextLabel := widget.NewLabel("Next: Loading...")
-	container := container.NewVBox(currentLabel, nextLabel)
+	currentRoute := widget.NewLabel("Route: Loading...")
+	nextStop := widget.NewLabel("Next: Loading...")
+	container := container.NewVBox(currentRoute, nextStop)
 
 	apiURL := "http://192.168.64.19:3000/getAllRoutes" // Replace with actual API URL
 
@@ -55,22 +55,22 @@ func main() {
 			} else {
 				// If routes are fetched successfully, display the first route's info
 				if len(routes) > 0 {
-					currentLabel.SetText("Current: " + routes[0].Name)
+					currentRoute.SetText("Route: " + routes[0].Name)
 					if len(routes[0].Stops) > 0 {
-						nextLabel.SetText("Next: " + routes[0].Stops[0])
+						nextStop.SetText("Next stop: " + routes[0].Stops[0])
 					} else {
-						nextLabel.SetText("Next: No stops available")
+						nextStop.SetText("Next stop: No stops available")
 					}
 				} else {
-					currentLabel.SetText("Current: No routes available")
-					nextLabel.SetText("Next: N/A")
+					currentRoute.SetText("Route: No routes available")
+					nextStop.SetText("Next stop: N/A")
 				}
 			}
 			time.Sleep(5 * time.Second) // Refresh every 5 seconds
 		}
 	}()
 
+	myWindow.SetFullScreen(true)
 	myWindow.SetContent(container)
-	myWindow.FullScreen()
 	myWindow.ShowAndRun()
 }
